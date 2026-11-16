@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_actions_server_ai_create_sale_order" model="ir.actions.server">
+        <field name="name">AI: Create Draft Sale Order</field>
+        <field name="model_id" ref="ai.model_ai_agent"/>
+        <field name="state">code</field>
+        <field name="use_in_ai" eval="True"/>
+        <field name="ai_tool_allow_end_message" eval="False"/>
+        <field name="code">
+ai['result'] = record._ai_tool_create_sale_order(product_names, quantities, note)
+        </field>
+        <field name="ai_tool_description">
+Create a draft sales quotation for the current Odoo user as the customer.
+Use this tool when the user asks to place an order, create a sales order, create a quotation, or buy products.
+The customer is always the current user's related partner; do not ask for another customer unless the user says the current customer is wrong.
+Extract product names and quantities from the user's request into two arrays: product_names and quantities. The quantity at each index must match the product name at the same index.
+Only create a draft quotation; do not confirm the quotation.
+If product or quantity information is missing, ask the user for the missing details before using this tool.
+        </field>
+        <field name="ai_tool_schema">
+{
+    "type": "object",
+    "properties": {
+        "product_names": {
+            "type": "array",
+            "description": "Product names, internal references, or barcodes requested by the user. Keep the same order as quantities.",
+            "items": {"type": "string"}
+        },
+        "quantities": {
+            "type": "array",
+            "description": "Requested quantities. Keep the same order as product_names.",
+            "items": {"type": "number"}
+        },
+        "note": {
+            "type": "string",
+            "description": "Optional order note from the user. Use an empty string if the user provides no note."
+        }
+    },
+    "required": ["product_names", "quantities", "note"]
+}
+        </field>
+    </record>
+
+    <record id="ir_actions_server_ai_search_website_products" model="ir.actions.server">
+        <field name="name">AI: Search Website Products</field>
+        <field name="model_id" ref="ai.model_ai_agent"/>
+        <field name="state">code</field>
+        <field name="use_in_ai" eval="True"/>
+        <field name="ai_tool_allow_end_message" eval="False"/>
+        <field name="code">
+ai['result'] = record._ai_tool_search_website_products(query)
+        </field>
+        <field name="ai_tool_description">
+Search the current website's published, sellable product catalog without changing the cart.
+Use this tool when a shopper names or describes an item, before asking them for an exact product name or model.
+Search with the product name, internal reference, barcode, or a few product and attribute keywords, in the shopper's language or English.
+The result contains actual product names, catalog names, references and attributes. Preserve these exact values in later tool calls; prefer the reference when it is available.
+If no result matches a translated attribute, search again using fewer product keywords to retrieve the real catalog variants. Do not invent a translated catalog name.
+If has_more is true or several variants could match the request, narrow the search or ask the shopper for the missing attribute using actual catalog candidates.
+        </field>
+        <field name="ai_tool_schema">
+{
+    "type": "object",
+    "properties": {
+        "query": {
+            "type": "string",
+            "description": "A product name, internal reference, barcode, or a few product and attribute keywords. Use catalog spellings when known."
+        }
+    },
+    "required": ["query"]
+}
+        </field>
+    </record>
+
+    <record id="ir_actions_server_ai_add_products_to_website_cart" model="ir.actions.server">
+        <field name="name">AI: Add Products To Website Cart</field>
+        <field name="model_id" ref="ai.model_ai_agent"/>
+        <field name="state">code</field>
+        <field name="use_in_ai" eval="True"/>
+        <field name="ai_tool_allow_end_message" eval="False"/>
+        <field name="code">
+ai['result'] = record._ai_tool_add_products_to_website_cart(product_names, quantities, note)
+        </field>
+        <field name="ai_tool_description">
+Add requested products to the current website shopping cart.
+Use this tool for website or portal shoppers when they want to buy, order, or add products to their cart.
+Resolve product descriptions using Search Website Products first, unless the exact internal references or complete catalog variant names are already known from a tool result.
+Keep known references unchanged. Copy catalog variant names exactly; do not translate or shorten them.
+Extract product names and quantities into two arrays: product_names and quantities. The quantity at each index must match the product name at the same index.
+Only add products to the current website cart; do not confirm the order, create an invoice, or process payment.
+If the product is still ambiguous after searching, ask only for the missing variant attributes. Ask for the quantity if it is missing.
+The complete batch is rolled back if this tool fails. Search the catalog or use the reported candidates to resolve the error before retrying.
+After success, report the actual added quantities and do not repeat the same batch unless the shopper explicitly requests more.
+        </field>
+        <field name="ai_tool_schema">
+{
+    "type": "object",
+    "properties": {
+        "product_names": {
+            "type": "array",
+            "description": "Exact references or barcodes, or complete variant names copied from the website catalog search. Prefer references and preserve catalog spellings without translation. Keep the same order as quantities.",
+            "items": {"type": "string"}
+        },
+        "quantities": {
+            "type": "array",
+            "description": "Positive whole-number quantities to add to cart. Keep the same order as product_names.",
+            "items": {"type": "number"}
+        },
+        "note": {
+            "type": "string",
+            "description": "Optional user note. Use an empty string if the user provides no note."
+        }
+    },
+    "required": ["product_names", "quantities", "note"]
+}
+        </field>
+    </record>
+
+    <record id="ai_topic_sale_order_creation" model="ai.topic">
+        <field name="name">Sale Order Creation</field>
+        <field name="description">Allows the AI assistant to create draft sales quotations for the current user.</field>
+        <field name="instructions">
+You can create draft sales quotations when an internal user wants to place an order or buy products.
+The customer must be the current user's related customer record.
+Before creating the quotation, make sure the user provided all product names and quantities.
+If products are ambiguous or missing, ask for clarification instead of guessing.
+After creating the quotation, tell the user the quotation number and remind them to review it before confirmation.
+Never confirm, cancel, or delete a sales quotation unless a separate approved tool exists for that action.
+        </field>
+        <field name="tool_ids" eval="[(6, 0, [ref('ai_sale_order_2nd.ir_actions_server_ai_create_sale_order')])]"/>
+    </record>
+
+    <record id="ai_topic_website_cart_ordering" model="ai.topic">
+        <field name="name">Website Cart Ordering</field>
+        <field name="description">Allows website visitors and portal users to add products to their shopping cart through AI livechat.</field>
+        <field name="instructions">
+When a website visitor or portal user wants to buy products, add the products to the current website shopping cart.
+Use the website cart tool instead of creating a backend quotation.
+Reply in the language of the shopper's latest message.
+For shopping requests, follow this catalog and cart workflow rather than backend navigation or lead creation instructions. Do not narrate tool calls in English when the shopper is speaking Chinese.
+When the shopper gives a product name or description, use Search Website Products before asking them for an exact name or model. For example, search the catalog for a black drawer when the shopper asks for one; do not immediately ask for its model.
+If exactly one catalog product satisfies the requested attributes and the shopper gave a quantity, add it to the cart. Do not require an extra confirmation for an explicit add-to-cart request.
+If multiple catalog variants satisfy the request, explain the actual choices and ask only for the missing attribute. A color alone may leave the material or other attributes unresolved. Never choose one arbitrarily.
+Use known internal references unchanged. Otherwise copy the complete catalog variant name from a tool result. Never translate catalog names or attributes in tool arguments, even when your reply is in another language.
+If a translated attribute cannot be found, search again with fewer keywords to discover actual variants and their catalog spellings. Ask the shopper when the requested attribute still cannot be identified reliably.
+Before adding products, make sure the quantity for each resolved product is known and is a positive whole number.
+Read quantities from the original shopper message and retain them after searching. Chinese quantity phrases such as 一个, 一件, 一张 mean quantity 1; 两个, 两件 mean quantity 2. For example, 帮我下单一个黑色抽屉 already specifies quantity 1: search for the black drawer, and when it is a unique match, add one immediately. Never ask again for a quantity the shopper already provided.
+If an add-to-cart call fails, the complete batch was left unchanged. Resolve the product using catalog search or error candidates before retrying. Do not claim that any products were added on a failed call.
+After a successful call, report the actual added quantities and give the shopper the /shop/cart link to review the cart before checkout. Do not repeat a successful batch unless the shopper explicitly requests more.
+Never confirm the order, create an invoice, or process payment.
+        </field>
+        <field name="tool_ids" eval="[(6, 0, [ref('ai_sale_order_2nd.ir_actions_server_ai_search_website_products'), ref('ai_sale_order_2nd.ir_actions_server_ai_add_products_to_website_cart')])]"/>
+    </record>
+</odoo>

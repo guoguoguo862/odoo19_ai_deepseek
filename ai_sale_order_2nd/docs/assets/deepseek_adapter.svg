@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9" fill="#7890a2"/></marker></defs>
+<rect width="100%" height="100%" fill="#f4f8fb"/>
+<text x="700" y="48" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="30" fill="#16324F">DeepSeek 适配：模型接口与 Odoo 业务工具的连接</text>
+<text x="700" y="84" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#587184">模型适配由独立模块 ai_deepseek 提供；业务工具由 ai_sale_order_2nd 提供</text>
+<path d="M620,232 L780,232" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M1060,315 L1060,380" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M780,462 L620,462" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M340,545 L340,610" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M620,692 L780,692" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M1280,610 L1280,545" fill="none" stroke="#7890a2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="60" y="150" width="560" height="165" rx="16" fill="white" stroke="#16324F" stroke-width="2"/>
+<text x="340" y="193" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#16324F">01  Odoo Agent 组织输入</text>
+<text x="340" y="232" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">用户问题 / Topics / 历史 / 工具 Schema</text>
+<text x="340" y="263" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">所选模型映射到 deepseek Provider</text>
+<rect x="780" y="150" width="560" height="165" rx="16" fill="white" stroke="#087F8C" stroke-width="2"/>
+<text x="1060" y="193" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#087F8C">02  适配层转换请求</text>
+<text x="1060" y="232" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">messages + tools + tool_choice</text>
+<text x="1060" y="263" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">API 地址与服务端 Key 鉴权</text>
+<rect x="780" y="380" width="560" height="165" rx="16" fill="white" stroke="#087F8C" stroke-width="2"/>
+<text x="1060" y="423" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#087F8C">03  DeepSeek API</text>
+<text x="1060" y="462" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">POST /chat/completions</text>
+<text x="1060" y="493" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">返回自然语言或 tool_calls</text>
+<rect x="60" y="380" width="560" height="165" rx="16" fill="white" stroke="#16324F" stroke-width="2"/>
+<text x="340" y="423" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#16324F">04  解析并交给统一执行循环</text>
+<text x="340" y="462" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">工具名 / tool_call_id / JSON 参数</text>
+<text x="340" y="493" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">使用已提供工具列表与业务校验</text>
+<rect x="60" y="610" width="560" height="165" rx="16" fill="white" stroke="#16324F" stroke-width="2"/>
+<text x="340" y="653" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#16324F">05  Suto 商品业务工具</text>
+<text x="340" y="692" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">查询真实目录 / 明确商品 / 执行加购</text>
+<text x="340" y="723" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">保留网站范围、数量校验和失败回滚</text>
+<rect x="780" y="610" width="560" height="165" rx="16" fill="white" stroke="#AA7217" stroke-width="2"/>
+<text x="1060" y="653" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="25" fill="#AA7217">06  回填实际工具结果</text>
+<text x="1060" y="692" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">role: tool + tool_call_id + content</text>
+<text x="1060" y="723" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#16324F">交回模型，继续执行或生成最终回复</text>
+</svg>

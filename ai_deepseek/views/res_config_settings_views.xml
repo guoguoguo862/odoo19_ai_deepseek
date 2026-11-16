@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.ai.deepseek</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="ai_app.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='ai_providers']" position="inside">
+                <setting id="deepseek_provider" string="Use your own DeepSeek account"
+                         help="Connect DeepSeek for text chat and business tools. Knowledge sources, file inputs and audio are not supported by this connector."
+                         groups="base.group_system">
+                    <field name="deepseek_key_enabled"/>
+                    <group invisible="not deepseek_key_enabled">
+                        <div class="flex-grow-1">
+                            <field name="deepseek_key" placeholder="API Key" password="True"
+                                   nolabel="1" class="w-100"/>
+                        </div>
+                    </group>
+                    <div class="text-muted mt8">
+                        Saving the key automatically loads models from DeepSeek. The list is refreshed daily.
+                    </div>
+                    <div class="mt8">
+                        <button name="action_refresh_deepseek_models" type="object"
+                                string="Save Key and Refresh Models" class="btn-link" icon="fa-refresh"/>
+                    </div>
+                    <group class="mt8">
+                        <field name="deepseek_model_sync_status" readonly="1"/>
+                        <field name="deepseek_model_count" readonly="1"/>
+                        <field name="deepseek_model_last_sync" readonly="1"/>
+                    </group>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,31 @@
+# Python and local development files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime configuration, credentials, database exports and logs
+.env
+.env.*
+!.env.example
+odoo.conf
+*.log
+*.sql
+*.dump
+*.backup
+*.pem
+*.key
+
+# Generated documentation and local build files
+.build/
+ai_sale_order_2nd/docs/*.html
+!ai_sale_order_2nd/docs/index.html
+ai_sale_order_2nd/docs/*.pdf
+ai_sale_order_2nd/docs/*.docx
+ai_sale_order_2nd/docs/*.pptx
+ai_sale_order_2nd/docs/*.zip
