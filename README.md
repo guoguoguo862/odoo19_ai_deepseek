@@ -68,6 +68,15 @@ python /path/to/odoo/odoo-bin -c /path/to/odoo.conf -d target_db -i ai_deepseek,
 
 问题反馈：[GitHub Issues](https://github.com/guoguoguo862/odoo19_ai_deepseek/issues)。提交问题时请移除 API Key、数据库密码和客户数据。
 
+## AI 辅助与致谢
+
+本项目由 Suto 开发和维护。
+
+- [OpenAI Codex](https://github.com/openai/codex)：辅助代码实现、问题排查、测试与文档编写。
+- [DeepSeek](https://github.com/deepseek-ai)：本项目集成的模型服务，通过 `ai_deepseek` 提供文本对话与业务工具调用。
+
+以上为工具使用与技术集成说明，不代表相关公司的官方参与或背书。
+
 ## 许可证
 
 模块作者：Suto。两个模块按 manifest 声明使用 **LGPL-3**，许可证正文见 [LICENSE](LICENSE)，其引用的 GPL v3 正文见 [COPYING](COPYING)。Odoo 企业版依赖遵循自身授权，不包含在本仓库中。
